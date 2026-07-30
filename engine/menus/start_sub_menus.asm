@@ -705,7 +705,17 @@ StartMenu_Option::
 	ldh [hAutoBGTransferEnabled], a
 	call ClearScreen
 	call UpdateSprites
+	ld a, [wOptions]
+	and 1 << BIT_MONOCHROME_OVERWORLD
+	push af
 	callfar DisplayOptionMenu
+	pop bc
+	ld a, [wOptions]
+	and 1 << BIT_MONOCHROME_OVERWORLD
+	cp b
+	jr z, .palettesDone
+	callfar ReloadOverworldColorPalettes
+.palettesDone
 	call LoadScreenTilesFromBuffer2 ; restore saved screen
 	call LoadTextBoxTilePatterns
 	call UpdateSprites

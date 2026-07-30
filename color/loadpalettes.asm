@@ -148,9 +148,92 @@ LoadTilesetPalette:
 	cp PLATEAU ; tileset 0 isn't the only outside tileset
 	call z, LoadTownPalette
 
+	ld de, W2_BgPaletteData
+	call LoadOverworldMonochromePalettes
+
 	pop hl
 	pop de
 	pop bc
+	ret
+
+; If monochrome overworld colors are enabled, fill all eight palettes at de
+; with the palette selected for the current map. The destination is in WRAM
+; bank 2. This preserves all registers and the current WRAM bank.
+LoadOverworldMonochromePalettes:
+	push af
+	push bc
+	push de
+	push hl
+
+	ldh a, [rSVBK]
+	push af
+	xor a
+	ldh [rSVBK], a
+	ld a, [wOptions]
+	bit BIT_MONOCHROME_OVERWORLD, a
+	jr z, .done
+
+	call GetOverworldMonoPalette
+	ld l, a
+	ld h, 0
+	add hl, hl
+	add hl, hl
+	add hl, hl
+	ld bc, OverworldMonoPalettes
+	add hl, bc
+
+	ld a, 2
+	ldh [rSVBK], a
+	ld b, 8
+.nextPalette
+	push hl
+	ld c, 8
+.copyPalette
+	ld a, [hli]
+	ld [de], a
+	inc de
+	dec c
+	jr nz, .copyPalette
+	pop hl
+	dec b
+	jr nz, .nextPalette
+
+.done
+	pop af
+	ldh [rSVBK], a
+	pop hl
+	pop de
+	pop bc
+	pop af
+	ret
+
+; Reload the overworld palette sources after changing the color option.
+; This preserves all registers and the current WRAM bank.
+ReloadOverworldColorPalettes::
+	push af
+	push bc
+	push de
+	push hl
+
+	call LoadOverworldSpritePalettes
+	ld de, W2_SprPaletteData
+	call LoadOverworldMonochromePalettes
+	call LoadTilesetPalette
+
+	ldh a, [rSVBK]
+	push af
+	ld a, 2
+	ldh [rSVBK], a
+	ld a, 1
+	ld [W2_ForceBGPUpdate], a
+	ld [W2_ForceOBPUpdate], a
+	pop af
+	ldh [rSVBK], a
+
+	pop hl
+	pop de
+	pop bc
+	pop af
 	ret
 
 ; Towns have different roof colors while using the same tileset
