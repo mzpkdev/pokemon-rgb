@@ -22,6 +22,7 @@ def test_debug_new_game_spawns_static_pikachu(emulator: Emulator) -> None:
         max_frames=3600,
         description="debug-new-game-bedroom",
     )
+    emulator.pyboy.button_release("select")
     emulator.tick(300)
 
     assert emulator.read("wNumSprites") == 0
@@ -86,6 +87,7 @@ def test_debug_new_game_spawns_static_pikachu_outdoors(emulator: Emulator) -> No
         max_frames=3600,
         description="debug-new-game-pallet-town",
     )
+    emulator.pyboy.button_release("select")
     emulator.tick(300)
 
     assert emulator.read("wPartyCount") == 6
