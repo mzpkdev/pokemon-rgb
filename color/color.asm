@@ -702,6 +702,14 @@ SetPal_Overworld:
 	ld [W2_UseOBP1], a
 
 	CALL_INDIRECT LoadOverworldSpritePalettes
+	push bc
+	push de
+	push hl
+	ld de, W2_SprPaletteData
+	CALL_INDIRECT LoadOverworldMonochromePalettes
+	pop hl
+	pop de
+	pop bc
 
 	xor a
 	ldh [rSVBK], a

@@ -216,6 +216,8 @@ ReloadOverworldColorPalettes::
 	push hl
 
 	call LoadOverworldSpritePalettes
+	ld de, W2_SprPaletteData
+	call LoadOverworldMonochromePalettes
 	call LoadTilesetPalette
 
 	ldh a, [rSVBK]
