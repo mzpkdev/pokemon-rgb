@@ -1043,6 +1043,7 @@ SECTION "bank2C", ROMX
 INCLUDE "color/init.asm"
 INCLUDE "color/refreshmaps.asm"
 INCLUDE "color/loadpalettes.asm"
+INCLUDE "color/overworld_monochrome.asm"
 
 INCLUDE "color/vblank.asm"
 INCLUDE "color/sprites.asm"
