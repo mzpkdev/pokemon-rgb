@@ -39,7 +39,7 @@ OptionMenuJumpTable:
 	dw OptionsMenu_BattleStyle
 	dw OptionsMenu_SpeakerSettings
 	dw OptionsMenu_GBPrinterBrightness
-	dw OptionsMenu_Dummy
+	dw OptionsMenu_OverworldColor
 	dw OptionsMenu_Dummy
 	dw OptionsMenu_Cancel
 
@@ -355,6 +355,30 @@ GetGBPrinterBrightness:
 	lb de, $60, $0
 	ret
 
+OptionsMenu_OverworldColor:
+	ldh a, [hJoy5]
+	and D_LEFT | D_RIGHT
+	jr z, .nothingPressed
+	ld a, [wOptions]
+	xor 1 << BIT_MONOCHROME_OVERWORLD
+	ld [wOptions], a
+.nothingPressed
+	ld a, [wOptions]
+	bit BIT_MONOCHROME_OVERWORLD, a
+	ld de, FullColorText
+	jr z, .gotText
+	ld de, MonochromeText
+.gotText
+	hlcoord 14, 12
+	call PlaceString
+	and a
+	ret
+
+FullColorText:
+	db "FULL@"
+MonochromeText:
+	db "MONO@"
+
 OptionsMenu_Dummy:
 	and a
 	ret
@@ -386,8 +410,8 @@ OptionsControl:
 	scf
 	ret
 .doNotWrapAround
-	cp $4
-	jr c, .regularIncrement
+	cp $5
+	jr nz, .regularIncrement
 	ld [hl], $6
 .regularIncrement
 	inc [hl]
@@ -397,7 +421,7 @@ OptionsControl:
 	ld a, [hl]
 	cp $7
 	jr nz, .doNotMoveCursorToPrintOption
-	ld [hl], $4
+	ld [hl], $5
 	scf
 	ret
 .doNotMoveCursorToPrintOption
@@ -437,7 +461,7 @@ InitOptionsMenu:
 	call PlaceString
 	xor a
 	ld [wOptionsCursorLocation], a
-	ld c, 5 ; the number of options to loop through
+	ld c, 6 ; the number of options to loop through
 .loop
 	push bc
 	call GetOptionPointer ; updates the next option
@@ -458,7 +482,8 @@ AllOptionsText:
 	next "ANIMATION  :"
 	next "BATTLESTYLE:"
 	next "SOUND:"
-	next "PRINT:@"
+	next "PRINT:"
+	next "OVERWORLD :@"
 
 OptionMenuCancelText:
 	db "CANCEL     SELECT@"
