@@ -13,10 +13,12 @@ def test_debug_rom_reaches_title_screen(emulator: Emulator) -> None:
 
 def test_debug_new_game_spawns_static_pikachu(emulator: Emulator) -> None:
     emulator.tick(600)
-    emulator.advance_until(
+    # The title screen reads hJoyHeld after its exit animation, so keep Select
+    # held until that check instead of sending a short button tap.
+    emulator.pyboy.button("select", delay=600)
+    emulator.tick_until(
         emulator.is_in_bedroom_overworld,
-        button="select",
-        max_presses=20,
+        max_frames=2400,
         description="debug-new-game-bedroom",
     )
 
