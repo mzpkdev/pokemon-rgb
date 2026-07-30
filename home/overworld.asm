@@ -283,7 +283,7 @@ OverworldLoopLessDelay::
 	push bc
 	push de
 	push hl
-	farcall QueuePikachuPlayerStep
+	homecall QueuePikachuPlayerStep
 	pop hl
 	pop de
 	pop bc

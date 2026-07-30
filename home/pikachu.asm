@@ -1,0 +1,3 @@
+UpdatePikachuFollowerHome::
+	homecall UpdatePikachuFollower
+	ret
