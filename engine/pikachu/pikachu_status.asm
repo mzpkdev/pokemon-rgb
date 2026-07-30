@@ -39,3 +39,79 @@ FindLivingPikachuInParty::
 	ld a, $ff
 	and a
 	ret
+
+; Create a stationary synthetic sprite in slot 15. Maps which already use all
+; 15 object slots retain their content and simply do not display Pikachu.
+InitializePikachuCompanion::
+	call ClearPikachuCompanion
+; Phase 1 reserves a known-free graphics slot only in the debug start map.
+; General map graphics allocation is introduced with following support.
+	ld a, [wCurMap]
+	cp REDS_HOUSE_2F
+	ret nz
+	ld a, [wNumSprites]
+	cp PIKACHU_SPRITE_INDEX
+	ret nc
+	call FindLivingPikachuInParty
+	ret nc
+
+	ld a, SPRITE_PIKACHU
+	ld [wSpritePikachuStateData1PictureID], a
+	ld a, 2
+	ld [wSpritePikachuStateData2ImageBaseOffset], a
+	ld a, $ff
+	ld [wSpritePikachuStateData1ImageIndex], a
+	ld [wSpritePikachuStateData2MovementByte1], a
+	ld a, [wSpritePlayerStateData1FacingDirection]
+	ld [wSpritePikachuStateData1FacingDirection], a
+
+; Start on the adjacent tile behind the direction the player faces.
+	ld a, [wYCoord]
+	add 4
+	ld b, a
+	ld a, [wXCoord]
+	add 4
+	ld c, a
+	ld a, [wSpritePlayerStateData1FacingDirection]
+	and a
+	jr nz, .checkUp
+	dec b
+	jr .storeCoords
+.checkUp
+	cp SPRITE_FACING_UP
+	jr nz, .checkLeft
+	inc b
+	jr .storeCoords
+.checkLeft
+	cp SPRITE_FACING_LEFT
+	jr nz, .facingRight
+	inc c
+	jr .storeCoords
+.facingRight
+	dec c
+.storeCoords
+	ld a, b
+	ld [wSpritePikachuStateData2MapY], a
+	ld a, c
+	ld [wSpritePikachuStateData2MapX], a
+	ld a, 1
+	ld [wSpritePikachuStateData1MovementStatus], a
+	ld [wPikachuSpawnState], a
+	ld a, PIKACHU_SPRITE_INDEX * SPRITESTATEDATA1_LENGTH
+	ldh [hCurrentSpriteOffset], a
+	farjp InitializeSpriteScreenPosition
+
+ClearPikachuCompanion:
+	ld hl, wSpritePikachuStateData1
+	ld bc, SPRITESTATEDATA1_LENGTH
+	xor a
+	call FillMemory
+	ld hl, wSpritePikachuStateData2
+	ld bc, SPRITESTATEDATA2_LENGTH
+	xor a
+	call FillMemory
+	ld a, $ff
+	ld [wSpritePikachuStateData1ImageIndex], a
+	xor a
+	ld [wPikachuSpawnState], a
+	ret

@@ -2123,6 +2123,27 @@ LoadPlayerSpriteGraphicsCommon::
 .noCarry
 	set 3, h
 	lb bc, BANK(RedSprite), $0c
+	call CopyVideoData
+
+LoadBedroomPikachuSpriteGraphics:
+	ld a, [wCurMap]
+	cp REDS_HOUSE_2F
+	ret nz
+	ld a, [wSpritePikachuStateData1PictureID]
+	and a
+	ret z
+	ld de, PikachuSprite
+	ld hl, vNPCSprites + 12 tiles
+	lb bc, BANK(PikachuSprite), $0c
+	call CopyVideoData
+	ld a, $c0
+	add e
+	ld e, a
+	jr nc, .noCarry
+	inc d
+.noCarry
+	set 3, h
+	lb bc, BANK(PikachuSprite), $0c
 	jp CopyVideoData
 
 ; function to load data from the map header
@@ -2373,6 +2394,7 @@ LoadMapHeader::
 	dec b
 	jp nz, .loadSpriteLoop
 .finishUp
+	farcall InitializePikachuCompanion
 	predef LoadTilesetHeader
 	callfar LoadWildData
 	pop hl ; restore hl from before going to the warp/sign/sprite data (this value was saved for seemingly no purpose)
@@ -2585,5 +2607,3 @@ SetCurBlackoutMap::
 BlackoutMapCommon:
 	ld [wLastBlackoutMap], a
 	ret
-
-

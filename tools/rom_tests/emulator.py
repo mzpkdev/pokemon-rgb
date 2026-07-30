@@ -80,6 +80,20 @@ class Emulator:
             if not self.pyboy.tick():
                 raise RuntimeError(f"Emulator stopped with {frames - frame} frames left")
 
+    def tick_until(
+        self,
+        predicate: Callable[[], bool],
+        *,
+        max_frames: int,
+        description: str,
+    ) -> None:
+        for _ in range(max_frames):
+            if predicate():
+                return
+            self.tick()
+        self.save_screenshot(f"timeout-{description}.png")
+        raise AssertionError(f"Timed out waiting for {description}")
+
     def press(self, button: str, wait_frames: int = 120) -> None:
         self.pyboy.button(button, delay=2)
         self.tick(3 + wait_frames)

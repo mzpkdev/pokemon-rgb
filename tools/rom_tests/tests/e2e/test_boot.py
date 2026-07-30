@@ -9,3 +9,20 @@ def test_debug_rom_reaches_title_screen(emulator: Emulator) -> None:
     pixels = emulator.pyboy.screen.image.convert("RGB").getcolors(maxcolors=256)
     assert pixels is not None
     assert len(pixels) > 1
+
+
+def test_debug_new_game_spawns_static_pikachu(emulator: Emulator) -> None:
+    emulator.tick(600)
+    emulator.press("select", wait_frames=0)
+    emulator.tick_until(
+        emulator.is_in_bedroom_overworld,
+        max_frames=2400,
+        description="debug-new-game-bedroom",
+    )
+
+    assert emulator.read("wNumSprites") == 0
+    assert emulator.read("wPartyCount") == 6
+    assert emulator.read("wSpritePikachuStateData1PictureID") == 0x3A
+    assert emulator.read("wSpritePikachuStateData1MovementStatus") == 1
+    assert emulator.read("wSpritePikachuStateData1ImageIndex") != 0xFF
+    assert emulator.read("wSpritePikachuStateData2ImageBaseOffset") == 2
