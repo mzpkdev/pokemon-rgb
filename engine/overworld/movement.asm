@@ -139,7 +139,8 @@ UpdateNPCSprite:
 	ld a, [wSpritePikachuStateData1PictureID]
 	and a
 	ret z
-	farjp UpdatePikachuFollower
+	farcall UpdatePikachuFollower
+	ret
 .regularSprite
 	ldh a, [hCurrentSpriteOffset]
 	swap a
