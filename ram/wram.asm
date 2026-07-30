@@ -2006,12 +2006,13 @@ wMapSpriteExtraData:: ds 16 * 2 ; trainer class/item ID, trainer set ID
 ; Transient companion state. This is rebuilt from the party and current map.
 wPikachuOverworldStateFlags:: db
 wPikachuSpawnState:: db
-wPikachuCollisionCounter:: db
-DEF wPikachuStepTimer EQU wPikachuCollisionCounter
+wPikachuCollisionCounter::
+wPikachuStepTimer:: db
 wPikachuFollowCommandBufferSize:: db
-wPikachuFollowCommandBuffer:: ds 16
-wPikachuTargetY EQU wPikachuFollowCommandBuffer + 12
-wPikachuTargetX EQU wPikachuFollowCommandBuffer + 13
+wPikachuFollowCommandBuffer:: ds 12
+wPikachuTargetY:: db
+wPikachuTargetX:: db
+	ds 2
 wPikachuFollowCommandBufferEnd::
 ASSERT wPikachuFollowCommandBufferEnd - wPikachuFollowCommandBuffer == 16
 
