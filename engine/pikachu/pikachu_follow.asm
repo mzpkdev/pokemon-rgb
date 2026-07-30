@@ -17,7 +17,7 @@ QueuePikachuPlayerStep::
 	bit 6, a
 	ret nz
 	ld a, [wPikachuFollowCommandBufferSize]
-	cp 8
+	cp 6 ; final four buffer bytes are reserved for follower scratch state
 	jr nc, .snap
 	add a
 	ld e, a
