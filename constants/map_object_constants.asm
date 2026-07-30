@@ -40,6 +40,11 @@ DEF SPRITESTATEDATA2_LENGTH EQU const_value
 
 DEF NUM_SPRITESTATEDATA_STRUCTS EQU 16
 
+; Slot 0 is the player. Pikachu may use the final NPC slot when the current
+; map has fewer than 15 objects; full maps keep the slot and omit Pikachu.
+DEF PIKACHU_SPRITE_INDEX EQU NUM_SPRITESTATEDATA_STRUCTS - 1
+ASSERT PIKACHU_SPRITE_INDEX == 15
+
 ; different kinds of people events
 DEF ITEM    EQU $80
 DEF TRAINER EQU $40
