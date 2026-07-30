@@ -13,10 +13,10 @@ def test_debug_rom_reaches_title_screen(emulator: Emulator) -> None:
 
 def test_debug_new_game_spawns_static_pikachu(emulator: Emulator) -> None:
     emulator.tick(600)
-    emulator.press("select", wait_frames=0)
-    emulator.tick_until(
+    emulator.advance_until(
         emulator.is_in_bedroom_overworld,
-        max_frames=2400,
+        button="select",
+        max_presses=20,
         description="debug-new-game-bedroom",
     )
 
