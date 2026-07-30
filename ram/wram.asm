@@ -2007,6 +2007,9 @@ wMapSpriteExtraData:: ds 16 * 2 ; trainer class/item ID, trainer set ID
 wPikachuOverworldStateFlags:: db
 wPikachuSpawnState:: db
 wPikachuCollisionCounter:: db
+wPikachuStepTimer:: db
+wPikachuTargetY:: db
+wPikachuTargetX:: db
 wPikachuFollowCommandBufferSize:: db
 wPikachuFollowCommandBuffer:: ds 16
 wPikachuFollowCommandBufferEnd::

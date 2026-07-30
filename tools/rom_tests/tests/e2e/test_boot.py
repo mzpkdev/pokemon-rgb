@@ -31,6 +31,51 @@ def test_debug_new_game_spawns_static_pikachu(emulator: Emulator) -> None:
     assert emulator.read("wSpritePikachuStateData1ImageIndex") != 0xFF
     assert emulator.read("wSpritePikachuStateData2ImageBaseOffset") == 2
 
+    old_player = (emulator.read("wYCoord"), emulator.read("wXCoord"))
+    opposites = {"left": "right", "right": "left", "up": "down", "down": "up"}
+    moved_with = None
+    for button in ("left", "right", "up", "down"):
+        emulator.press(button)
+        if (emulator.read("wYCoord"), emulator.read("wXCoord")) != old_player:
+            moved_with = button
+            break
+    assert moved_with is not None
+
+    emulator.tick_until(
+        lambda: (
+            emulator.read("wSpritePikachuStateData2MapY"),
+            emulator.read("wSpritePikachuStateData2MapX"),
+        )
+        == (old_player[0] + 4, old_player[1] + 4),
+        max_frames=120,
+        description="pikachu-reaches-previous-player-tile",
+    )
+
+    # Pikachu is deliberately non-blocking, so immediately backtracking
+    # through its tile cannot trap the player.
+    emulator.press(opposites[moved_with])
+    assert (emulator.read("wYCoord"), emulator.read("wXCoord")) == old_player
+
+    found_wall = False
+    for _ in range(8):
+        before_player = (emulator.read("wYCoord"), emulator.read("wXCoord"))
+        before_pikachu = (
+            emulator.read("wSpritePikachuStateData2MapY"),
+            emulator.read("wSpritePikachuStateData2MapX"),
+        )
+        emulator.press("up")
+        after_player = (emulator.read("wYCoord"), emulator.read("wXCoord"))
+        if after_player == before_player:
+            emulator.tick(30)
+            assert emulator.read("wPikachuFollowCommandBufferSize") == 0
+            assert (
+                emulator.read("wSpritePikachuStateData2MapY"),
+                emulator.read("wSpritePikachuStateData2MapX"),
+            ) == before_pikachu
+            found_wall = True
+            break
+    assert found_wall
+
 
 def test_debug_new_game_spawns_static_pikachu_outdoors(emulator: Emulator) -> None:
     emulator.tick(1800)

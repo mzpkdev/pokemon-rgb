@@ -139,10 +139,7 @@ UpdateNPCSprite:
 	ld a, [wSpritePikachuStateData1PictureID]
 	and a
 	ret z
-	call InitializeSpriteScreenPosition
-	ld a, [wSpritePikachuStateData1FacingDirection]
-	ld [wSpritePikachuStateData1ImageIndex], a
-	ret
+	farjp UpdatePikachuFollower
 .regularSprite
 	ldh a, [hCurrentSpriteOffset]
 	swap a

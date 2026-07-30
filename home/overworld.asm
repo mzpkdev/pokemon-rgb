@@ -1109,6 +1109,17 @@ LoadTileBlockMap::
 	ldh [hEastWestConnectedMapWidth], a
 	call LoadEastWestConnectionsTileMap
 .done
+	ld a, [wPikachuSpawnState]
+	and a
+	ret z
+	ld hl, wSpritePikachuStateData1YPixels
+	ld a, [hl]
+	sub b
+	ld [hl], a
+	ld hl, wSpritePikachuStateData1XPixels
+	ld a, [hl]
+	sub c
+	ld [hl], a
 	ret
 
 LoadNorthSouthConnectionsTileMap::
@@ -1554,6 +1565,7 @@ AdvancePlayerSprite::
 	ld a, [wXCoord]
 	add c
 	ld [wXCoord], a
+	farcall QueuePikachuPlayerStep
 .afterUpdateMapCoords
 	ld a, [wWalkCounter] ; walking animation counter
 	cp $07
