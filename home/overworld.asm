@@ -279,6 +279,15 @@ OverworldLoopLessDelay::
 	jp c, OverworldLoop
 
 .noCollision
+	push af
+	push bc
+	push de
+	push hl
+	farcall QueuePikachuPlayerStep
+	pop hl
+	pop de
+	pop bc
+	pop af
 	ld a, $08
 	ld [wWalkCounter], a
 	jr .moveAhead2
@@ -1574,13 +1583,6 @@ AdvancePlayerSprite::
 	ld a, [wXCoord]
 	add c
 	ld [wXCoord], a
-	push bc
-	push de
-	push hl
-	farcall QueuePikachuPlayerStep
-	pop hl
-	pop de
-	pop bc
 .afterUpdateMapCoords
 	ld a, [wWalkCounter] ; walking animation counter
 	cp $07

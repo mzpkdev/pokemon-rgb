@@ -13,6 +13,9 @@ QueuePikachuPlayerStep::
 	ld a, [wJoyIgnore]
 	and a
 	ret nz
+	ld a, [wd736]
+	bit 6, a
+	ret nz
 	ld a, [wPikachuFollowCommandBufferSize]
 	cp 8
 	jr nc, .snap
@@ -23,19 +26,9 @@ QueuePikachuPlayerStep::
 	add hl, de
 	ld a, [wYCoord]
 	add 4
-	ld b, a
-	ld a, [wSpritePlayerStateData1YStepVector]
-	ld c, a
-	ld a, b
-	sub c
 	ld [hli], a
 	ld a, [wXCoord]
 	add 4
-	ld b, a
-	ld a, [wSpritePlayerStateData1XStepVector]
-	ld c, a
-	ld a, b
-	sub c
 	ld [hl], a
 	ld hl, wPikachuFollowCommandBufferSize
 	inc [hl]
@@ -47,19 +40,9 @@ QueuePikachuPlayerStep::
 	ld [wPikachuStepTimer], a
 	ld a, [wYCoord]
 	add 4
-	ld b, a
-	ld a, [wSpritePlayerStateData1YStepVector]
-	ld c, a
-	ld a, b
-	sub c
 	ld [wSpritePikachuStateData2MapY], a
 	ld a, [wXCoord]
 	add 4
-	ld b, a
-	ld a, [wSpritePlayerStateData1XStepVector]
-	ld c, a
-	ld a, b
-	sub c
 	ld [wSpritePikachuStateData2MapX], a
 	ret
 
