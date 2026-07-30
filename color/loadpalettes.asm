@@ -207,6 +207,33 @@ LoadOverworldMonochromePalettes:
 	pop af
 	ret
 
+; Reload the overworld palette sources after changing the color option.
+; This preserves all registers and the current WRAM bank.
+ReloadOverworldColorPalettes::
+	push af
+	push bc
+	push de
+	push hl
+
+	call LoadOverworldSpritePalettes
+	call LoadTilesetPalette
+
+	ldh a, [rSVBK]
+	push af
+	ld a, 2
+	ldh [rSVBK], a
+	ld a, 1
+	ld [W2_ForceBGPUpdate], a
+	ld [W2_ForceOBPUpdate], a
+	pop af
+	ldh [rSVBK], a
+
+	pop hl
+	pop de
+	pop bc
+	pop af
+	ret
+
 ; Towns have different roof colors while using the same tileset
 LoadTownPalette:
 	ldh a, [rSVBK]

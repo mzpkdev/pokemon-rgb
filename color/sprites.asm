@@ -64,7 +64,12 @@ LoadOverworldSpritePalettes:
 	pop bc
 	ld a, b
 	ldh [rSVBK], a
-	jr LoadSpritePaletteData
+	call LoadSpritePaletteData
+	push de
+	ld de, W2_SprPaletteData
+	call LoadOverworldMonochromePalettes
+	pop de
+	ret
 
 LoadAttackSpritePalettes:
 	ld hl, AttackSpritePalettes
