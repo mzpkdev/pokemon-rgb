@@ -154,7 +154,7 @@ UpdatePikachuFollower::
 	ld [wPikachuStepTimer], a
 	ret
 .idle
-	farcall InitializeSpriteScreenPosition
+	call InitializePikachuScreenPosition
 	ld a, [wSpritePikachuStateData2ImageBaseOffset]
 	dec a
 	swap a
@@ -162,6 +162,26 @@ UpdatePikachuFollower::
 	ld a, [wSpritePikachuStateData1FacingDirection]
 	add b
 	ld [wSpritePikachuStateData1ImageIndex], a
+	ret
+
+InitializePikachuScreenPosition:
+	ld a, [wSpritePikachuStateData2MapY]
+	ld b, a
+	ld a, [wYCoord]
+	ld c, a
+	ld a, b
+	sub c
+	swap a
+	sub 4
+	ld [wSpritePikachuStateData1YPixels], a
+	ld a, [wSpritePikachuStateData2MapX]
+	ld b, a
+	ld a, [wXCoord]
+	ld c, a
+	ld a, b
+	sub c
+	swap a
+	ld [wSpritePikachuStateData1XPixels], a
 	ret
 
 ShiftPikachuFollowQueue:
