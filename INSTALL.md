@@ -1,160 +1,44 @@
-# Instructions
+# Installation
 
-These instructions explain how to set up the tools required to build **pokered-gbc**, including [**rgbds**](https://github.com/gbdev/rgbds), which assembles the source files into a ROM.
+Pokémon RGB uses the same pinned build toolchain as CI: RGBDS v1.0.1.
 
-If you run into trouble, ask for help on IRC or Discord (see [README.md](README.md)).
+## Prerequisites
 
+Install Git, GNU Make, a C compiler, `bison`, `libpng`, and `pkg-config`.
+Platform-specific RGBDS prerequisites are documented in the
+[RGBDS installation guide](https://rgbds.gbdev.io/install).
 
-## Windows 10
+## Clone and build
 
-Download and install [**Windows Subsystem for Linux**](https://docs.microsoft.com/en-us/windows/wsl/install-win10). Then open the **WSL terminal**.
-
-Update WSL's software before continuing. If you chose Debian, Ubuntu, or another distribution that uses `apt-get`, then enter this command:
-
-```bash
-apt-get update && apt-get upgrade
+```console
+git clone https://github.com/mzpkdev/pokemon-rgb.git
+cd pokemon-rgb
+make -j4
 ```
 
-WSL has its own file system that's not accessible from Windows, but Windows files *are* accessible from WSL. So you're going to want to install pokered-gbc within Windows. You'll have to change the **current working directory** every time you open WSL.
+This builds the Red, Blue, Green, Red debug, and Blue debug ROM variants.
 
-For example, if you want to store pokered-gbc in **C:\Users\\*\<user>*\Desktop**, enter this command:
+## Use a local RGBDS installation
 
-```bash
-cd /mnt/c/Users/<user>/Desktop
+To keep RGBDS v1.0.1 inside the repository instead of installing it globally,
+build RGBDS with a local prefix and pass its `bin` directory to Make:
+
+```console
+make RGBDS=rgbds-1.0.1/bin/
 ```
 
-(The Windows `C:\` drive is called `/mnt/c/` in WSL. Replace *\<user>* in the example path with your username.)
+## Run tests
 
-If this works, then follow [the instructions for **Linux**](#linux) below for whatever distribution you installed for WSL.
+Install the pinned Python dependencies and run pytest:
 
-Otherwise, continue reading below for [the older Windows instructions](#windows).
-
-
-## Windows
-
-Download [**Cygwin**](http://cygwin.com/install.html): **setup-x86_64.exe** for 64-bit Windows, **setup-x86.exe** for 32-bit.
-
-Run setup and leave the default settings. At the "**Select Packages**" step, choose to install the following, all of which are in the "**Devel**" category:
-
-- `make`
-- `git`
-- `gcc-core`
-
-Double click on the text that says "**Skip**" next to each package to select the most recent version to install.
-
-Then follow the [**rgbds** install instructions](https://rgbds.gbdev.io/install#pre-built) for Windows with Cygwin to install **rgbds 0.7.0**.
-
-**Note:** If you already have an installed rgbds older than 0.7.0, you will need to update to 0.7.0. Ignore this if you have never installed rgbds before. If a version newer than 0.7.0 does not work, try downloading 0.7.0.
-
-Now open the **Cygwin terminal** and enter the following commands.
-
-Cygwin has its own file system that's within Windows, at **C:\cygwin64\home\\*\<user>***. If you don't want to store pokered-gbc there, you'll have to change the **current working directory** every time you open Cygwin.
-
-For example, if you want to store pokered-gbc in **C:\Users\\*\<user>*\Desktop**:
-
-```bash
-cd /cygdrive/c/Users/<user>/Desktop
+```console
+python -m pip install -r tools/rom_tests/requirements.txt
+python -m pytest
 ```
 
-(The Windows `C:\` drive is called `/cygdrive/c/` in Cygwin. Replace *\<user>* in the example path with your username.)
+To reproduce GitHub Actions locally, install
+[nektos/act](https://github.com/nektos/act), ensure Docker is running, and use:
 
-Now you're ready to [build **pokered-gbc**](#build-pokered-gbc).
-
-
-## macOS
-
-Install [**Homebrew**](https://brew.sh/). Follow the official instructions.
-
-Open **Terminal** and prepare to enter commands.
-
-Then follow the [**rgbds** instructions](https://rgbds.gbdev.io/install#pre-built) for macOS to install **rgbds 0.7.0**.
-
-Now you're ready to [build **pokered-gbc**](#build-pokered-gbc).
-
-
-## Linux
-
-Open **Terminal** and enter the following commands, depending on which distro you're using.
-
-### Debian or Ubuntu
-
-To install the software required for **pokered-gbc**:
-
-```bash
-sudo apt-get install make gcc git
-```
-
-Then follow the [**rgbds** instructions](https://rgbds.gbdev.io/install#building-from-source) to build **rgbds 0.7.0** from source.
-
-### OpenSUSE
-
-To install the software required for **pokered-gbc**:
-
-```bash
-sudo zypper install make gcc git
-```
-
-Then follow the [**rgbds** instructions](https://rgbds.gbdev.io/install#building-from-source) to build **rgbds 0.7.0** from source.
-
-### Arch Linux
-
-To install the software required for **pokered-gbc**:
-
-```bash
-sudo pacman -S make gcc git rgbds
-```
-
-If you want to compile and install **rgbds** yourself instead, then follow the [**rgbds** instructions](https://rgbds.gbdev.io/install#building-from-source) to build **rgbds 0.7.0** from source.
-
-### Termux
-
-To install the software required for **pokered-gbc**:
-
-```bash
-sudo apt install make clang git sed
-```
-
-To install **rgbds**:
-
-```bash
-sudo apt install rgbds
-```
-
-If you want to compile and install **rgbds** yourself instead, then follow the [**rgbds** instructions](https://rgbds.gbdev.io/install#building-from-source) to build **rgbds 0.7.0** from source.
-
-### Other distros
-
-If your distro is not listed here, try to find the required software in its repositories:
-
-- `make`
-- `gcc` (or `clang`)
-- `git`
-- `rgbds`
-
-If `rgbds` is not available, you'll need to follow the [**rgbds** instructions](https://rgbds.gbdev.io/install#building-from-source) to build **rgbds 0.7.0** from source.
-
-Now you're ready to [build **pokered-gbc**](#build-pokered-gbc).
-
-
-## Build pokered-gbc
-
-To download the **pokered-gbc** source files:
-
-```bash
-git clone https://github.com/dannye/pokered-gbc
-cd pokered-gbc
-```
-
-To build **pokered.gbc** and **pokeblue.gbc**:
-
-```bash
-make
-```
-
-### Build with a local rgbds version
-
-If you have different projects that require different versions of `rgbds`, it might not be convenient to install rgbds 0.7.0 globally. Instead, you can put its files in a directory within pokered-gbc, such as `pokered-gbc/rgbds-0.7.0/`. Then specify it when you run `make`:
-
-```bash
-make RGBDS=rgbds-0.7.0/
+```console
+python tools/run_ci.py
 ```

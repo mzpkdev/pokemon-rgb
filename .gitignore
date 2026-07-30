@@ -21,6 +21,10 @@
 # precompiled python
 *.pyc
 *$py.class
+.pytest_cache/
+
+# test artifacts
+test-results/
 
 # save game files
 *.sgm
@@ -29,3 +33,6 @@
 *.sn*
 *.sa*
 *.sg1
+
+# local GitHub Actions artifacts
+.act-artifacts/

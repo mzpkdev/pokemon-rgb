@@ -93,7 +93,10 @@ tools:
 	$(MAKE) -C tools/
 
 
-RGBASMFLAGS = -Q8 -P includes.asm -Weverything -Wnumeric-string=2 -Wtruncation=1
+RGBASMFLAGS = -Q8 -P includes.asm -Weverything -Wno-obsolete -Werror -Wnumeric-string=2 -Wtruncation=1
+RGBLINKFLAGS = -Weverything -Werror
+RGBFIXFLAGS = -Weverything -Werror
+RGBGFXFLAGS = -Weverything -Werror
 # Create a sym/map for debug purposes if `make` run with `DEBUG=1`
 ifeq ($(DEBUG),1)
 RGBASMFLAGS += -E
