@@ -80,6 +80,20 @@ class Emulator:
             if not self.pyboy.tick():
                 raise RuntimeError(f"Emulator stopped with {frames - frame} frames left")
 
+    def tick_until(
+        self,
+        predicate: Callable[[], bool],
+        *,
+        max_frames: int,
+        description: str,
+    ) -> None:
+        for _ in range(max_frames):
+            if predicate():
+                return
+            self.tick()
+        self.save_screenshot(f"timeout-{description}.png")
+        raise AssertionError(f"Timed out waiting for {description}")
+
     def press(self, button: str, wait_frames: int = 120) -> None:
         self.pyboy.button(button, delay=2)
         self.tick(3 + wait_frames)
@@ -109,8 +123,12 @@ class Emulator:
         )
 
     def is_in_bedroom_overworld(self) -> bool:
-        game_timer_counting = self.read("wStatusFlags6") & 1
+        game_timer_counting = self.read("wd732") & 1
         return self.read("wCurMap") == 0x26 and bool(game_timer_counting)
+
+    def is_in_overworld_map(self, map_id: int) -> bool:
+        game_timer_counting = self.read("wd732") & 1
+        return self.read("wCurMap") == map_id and bool(game_timer_counting)
 
     def is_in_battle(self) -> bool:
         return self.read("wIsInBattle") != 0

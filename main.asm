@@ -67,6 +67,7 @@ INCLUDE "engine/overworld/cut.asm"
 INCLUDE "engine/overworld/missable_objects.asm"
 INCLUDE "engine/overworld/push_boulder.asm"
 INCLUDE "engine/pokemon/add_mon.asm"
+INCLUDE "engine/pikachu/pikachu_status.asm"
 INCLUDE "engine/flag_action.asm"
 INCLUDE "engine/events/heal_party.asm"
 INCLUDE "engine/math/bcd.asm"
@@ -413,6 +414,8 @@ INCLUDE "engine/printer/printer2.asm"
 
 SECTION "Engine Spillover", ROMX
 
+INCLUDE "engine/pikachu/pikachu_graphics.asm"
+INCLUDE "engine/pikachu/pikachu_follow.asm"
 INCLUDE "engine/overworld/use_another_repel.asm"
 INCLUDE "engine/menus/item_descriptions.asm"
 INCLUDE "engine/overworld/select_button_functionality.asm"

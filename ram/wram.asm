@@ -101,10 +101,11 @@ wSpriteStateData1::
 ; - E
 ; - F
 wSpritePlayerStateData1::  spritestatedata1 wSpritePlayerStateData1 ; player is struct 0
-; wSprite01StateData1 - wSprite15StateData1
-FOR n, 1, NUM_SPRITESTATEDATA_STRUCTS
+; wSprite01StateData1 - wSprite14StateData1
+FOR n, 1, PIKACHU_SPRITE_INDEX
 wSprite{02d:n}StateData1:: spritestatedata1 wSprite{02d:n}StateData1
 ENDR
+wSpritePikachuStateData1:: spritestatedata1 wSpritePikachuStateData1 ; companion is struct 15
 
 ; more data for all sprites on the current map
 ; holds info for 16 sprites with $10 bytes each
@@ -127,10 +128,11 @@ wSpriteStateData2::
 ; - E: sprite image base offset (in video ram, player always has value 1, used to compute sprite image index)
 ; - F
 wSpritePlayerStateData2::  spritestatedata2 wSpritePlayerStateData2 ; player is struct 0
-; wSprite01StateData2 - wSprite15StateData2
-FOR n, 1, NUM_SPRITESTATEDATA_STRUCTS
+; wSprite01StateData2 - wSprite14StateData2
+FOR n, 1, PIKACHU_SPRITE_INDEX
 wSprite{02d:n}StateData2:: spritestatedata2 wSprite{02d:n}StateData2
 ENDR
+wSpritePikachuStateData2:: spritestatedata2 wSpritePikachuStateData2 ; companion is struct 15
 
 ; The high byte of a pointer to anywhere within wSpriteStateData1 can be incremented
 ; to reach within wSpriteStateData2, and vice-versa for decrementing.
@@ -2000,6 +2002,19 @@ wXOffsetSinceLastSpecialWarp:: db
 
 wMapSpriteData:: ds 16 * 2 ; movement byte 2, text ID
 wMapSpriteExtraData:: ds 16 * 2 ; trainer class/item ID, trainer set ID
+
+; Transient companion state. This is rebuilt from the party and current map.
+wPikachuOverworldStateFlags:: db
+wPikachuSpawnState:: db
+wPikachuCollisionCounter::
+wPikachuStepTimer:: db
+wPikachuFollowCommandBufferSize:: db
+wPikachuFollowCommandBuffer:: ds 12
+wPikachuTargetY:: db
+wPikachuTargetX:: db
+	ds 2
+wPikachuFollowCommandBufferEnd::
+ASSERT wPikachuFollowCommandBufferEnd - wPikachuFollowCommandBuffer == 16
 
 ; map height in 2x2 meta-tiles
 wCurrentMapHeight2:: db

@@ -279,6 +279,15 @@ OverworldLoopLessDelay::
 	jp c, OverworldLoop
 
 .noCollision
+	push af
+	push bc
+	push de
+	push hl
+	homecall QueuePikachuPlayerStep
+	pop hl
+	pop de
+	pop bc
+	pop af
 	ld a, $08
 	ld [wWalkCounter], a
 	jr .moveAhead2
@@ -888,6 +897,11 @@ LeaveMapAnim::
 
 LoadPlayerSpriteGraphics::
 ; Load sprite graphics based on whether the player is standing, biking, or surfing.
+	ld a, [wWalkBikeSurfState]
+	and a
+	jr z, .walking
+	farcall ClearPikachuCompanion
+.walking
 
 	; 0: standing
 	; 1: biking
@@ -2373,6 +2387,7 @@ LoadMapHeader::
 	dec b
 	jp nz, .loadSpriteLoop
 .finishUp
+	farcall InitializePikachuCompanion
 	predef LoadTilesetHeader
 	callfar LoadWildData
 	pop hl ; restore hl from before going to the warp/sign/sprite data (this value was saved for seemingly no purpose)
@@ -2585,5 +2600,3 @@ SetCurBlackoutMap::
 BlackoutMapCommon:
 	ld [wLastBlackoutMap], a
 	ret
-
-

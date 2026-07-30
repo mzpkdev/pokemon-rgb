@@ -9,6 +9,13 @@
 ; If there is an inner loop, Y is the inner loop index, i.e. y#SPRITESTATEDATA1_* and
 ; y#SPRITESTATEDATA2_* denote fields of the sprite slots iterated over in the inner loop.
 InitMapSprites::
+	call .loadRegularSprites
+	push af
+	farcall InitPikachuSpriteGraphics
+	pop af
+	ret
+
+.loadRegularSprites
 	call InitOutsideMapSprites
 	ret c ; return if the map is an outside map (already handled by above call)
 ; if the map is an inside map (i.e. mapID >= FIRST_INDOOR_MAP)

@@ -64,6 +64,7 @@ INCLUDE "home/joypad.asm"
 INCLUDE "data/maps/map_header_pointers.asm"
 
 INCLUDE "home/overworld.asm"
+INCLUDE "home/pikachu.asm"
 INCLUDE "home/pokemon.asm"
 INCLUDE "home/print_bcd.asm"
 INCLUDE "home/pics.asm"

@@ -130,6 +130,19 @@ UnusedReadSpriteDataFunction:
 
 UpdateNPCSprite:
 	ldh a, [hCurrentSpriteOffset]
+	cp PIKACHU_SPRITE_INDEX * SPRITESTATEDATA1_LENGTH
+	jr nz, .regularSprite
+	ld a, [wNumSprites]
+	cp PIKACHU_SPRITE_INDEX
+	jr nc, .regularSprite
+; Pikachu is synthetic and has no corresponding wMapSpriteData entry.
+	ld a, [wSpritePikachuStateData1PictureID]
+	and a
+	ret z
+	call UpdatePikachuFollowerHome
+	ret
+.regularSprite
+	ldh a, [hCurrentSpriteOffset]
 	swap a
 	dec a
 	add a
