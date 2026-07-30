@@ -1565,7 +1565,13 @@ AdvancePlayerSprite::
 	ld a, [wXCoord]
 	add c
 	ld [wXCoord], a
+	push bc
+	push de
+	push hl
 	farcall QueuePikachuPlayerStep
+	pop hl
+	pop de
+	pop bc
 .afterUpdateMapCoords
 	ld a, [wWalkCounter] ; walking animation counter
 	cp $07
