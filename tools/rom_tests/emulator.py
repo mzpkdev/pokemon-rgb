@@ -123,7 +123,7 @@ class Emulator:
         )
 
     def is_in_bedroom_overworld(self) -> bool:
-        game_timer_counting = self.read("wStatusFlags6") & 1
+        game_timer_counting = self.read("wd732") & 1
         return self.read("wCurMap") == 0x26 and bool(game_timer_counting)
 
     def is_in_battle(self) -> bool:
