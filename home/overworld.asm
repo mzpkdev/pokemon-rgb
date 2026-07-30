@@ -1118,26 +1118,6 @@ LoadTileBlockMap::
 	ldh [hEastWestConnectedMapWidth], a
 	call LoadEastWestConnectionsTileMap
 .done
-	push af
-	push bc
-	push de
-	push hl
-	ld a, [wPikachuSpawnState]
-	and a
-	jr z, .restoreRegisters
-	ld hl, wSpritePikachuStateData1YPixels
-	ld a, [hl]
-	sub b
-	ld [hl], a
-	ld hl, wSpritePikachuStateData1XPixels
-	ld a, [hl]
-	sub c
-	ld [hl], a
-.restoreRegisters
-	pop hl
-	pop de
-	pop bc
-	pop af
 	ret
 
 LoadNorthSouthConnectionsTileMap::
