@@ -44,21 +44,17 @@ FindLivingPikachuInParty::
 ; 15 object slots retain their content and simply do not display Pikachu.
 InitializePikachuCompanion::
 	call ClearPikachuCompanion
-; Phase 1 reserves a known-free graphics slot only in the debug start map.
-; General map graphics allocation is introduced with following support.
-	ld a, [wCurMap]
-	cp REDS_HOUSE_2F
-	ret nz
 	ld a, [wNumSprites]
 	cp PIKACHU_SPRITE_INDEX
 	ret nc
+	ld a, [wWalkBikeSurfState]
+	and a
+	ret nz
 	call FindLivingPikachuInParty
 	ret nc
 
 	ld a, SPRITE_PIKACHU
 	ld [wSpritePikachuStateData1PictureID], a
-	ld a, 2
-	ld [wSpritePikachuStateData2ImageBaseOffset], a
 	ld a, $ff
 	ld [wSpritePikachuStateData1ImageIndex], a
 	ld [wSpritePikachuStateData2MovementByte1], a
@@ -101,7 +97,14 @@ InitializePikachuCompanion::
 	ldh [hCurrentSpriteOffset], a
 	farjp InitializeSpriteScreenPosition
 
-ClearPikachuCompanion:
+ClearPikachuCompanion::
+	xor a
+	ld [wPikachuSpawnState], a
+; On a full map, slot 15 is real map content already initialized by
+; LoadMapHeader. Clear companion state without erasing that object.
+	ld a, [wNumSprites]
+	cp PIKACHU_SPRITE_INDEX
+	ret nc
 	ld hl, wSpritePikachuStateData1
 	ld bc, SPRITESTATEDATA1_LENGTH
 	xor a
@@ -112,6 +115,4 @@ ClearPikachuCompanion:
 	call FillMemory
 	ld a, $ff
 	ld [wSpritePikachuStateData1ImageIndex], a
-	xor a
-	ld [wPikachuSpawnState], a
 	ret

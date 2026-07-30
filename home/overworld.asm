@@ -888,6 +888,11 @@ LeaveMapAnim::
 
 LoadPlayerSpriteGraphics::
 ; Load sprite graphics based on whether the player is standing, biking, or surfing.
+	ld a, [wWalkBikeSurfState]
+	and a
+	jr z, .walking
+	farcall ClearPikachuCompanion
+.walking
 
 	; 0: standing
 	; 1: biking
@@ -2123,27 +2128,6 @@ LoadPlayerSpriteGraphicsCommon::
 .noCarry
 	set 3, h
 	lb bc, BANK(RedSprite), $0c
-	call CopyVideoData
-
-LoadBedroomPikachuSpriteGraphics:
-	ld a, [wCurMap]
-	cp REDS_HOUSE_2F
-	ret nz
-	ld a, [wSpritePikachuStateData1PictureID]
-	and a
-	ret z
-	ld de, PikachuSprite
-	ld hl, vNPCSprites + 12 tiles
-	lb bc, BANK(PikachuSprite), $0c
-	call CopyVideoData
-	ld a, $c0
-	add e
-	ld e, a
-	jr nc, .noCarry
-	inc d
-.noCarry
-	set 3, h
-	lb bc, BANK(PikachuSprite), $0c
 	jp CopyVideoData
 
 ; function to load data from the map header
