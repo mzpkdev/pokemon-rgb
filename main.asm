@@ -414,6 +414,7 @@ INCLUDE "engine/printer/printer2.asm"
 
 SECTION "Engine Spillover", ROMX
 
+INCLUDE "engine/pikachu/pikachu_graphics.asm"
 INCLUDE "engine/overworld/use_another_repel.asm"
 INCLUDE "engine/menus/item_descriptions.asm"
 INCLUDE "engine/overworld/select_button_functionality.asm"
